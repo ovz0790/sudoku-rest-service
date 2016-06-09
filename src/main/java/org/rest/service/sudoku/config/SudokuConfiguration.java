@@ -3,9 +3,8 @@ package org.rest.service.sudoku.config;
 import org.rest.service.sudoku.decision.Sudoku;
 import org.rest.service.sudoku.decision.SudokuImpl;
 import org.rest.service.sudoku.utils.BoardUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.rest.service.sudoku.utils.ValidateUtil;
+import org.springframework.context.annotation.*;
 
 /**
  * Created by zlobina on 09.06.16.
@@ -14,6 +13,10 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource({
         "${config.path:classpath:config/base.properties}",
 })
+@ComponentScan(basePackages={"org.rest.service.sudoku.session"})
+/*@Import({
+        ContextConfiguration.class,
+})*/
 public class SudokuConfiguration {
     @Bean
     public Sudoku sudoku(){
@@ -23,6 +26,11 @@ public class SudokuConfiguration {
     @Bean
     public BoardUtil boardUtil(){
         return new BoardUtil();
+    }
+
+    @Bean
+    ValidateUtil validateUtil(){
+        return new ValidateUtil();
     }
 
 }

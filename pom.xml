@@ -151,4 +151,28 @@
         </dependency>-->
 
     </dependencies>
+
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.rest.service.sudoku.SudokuInitializer</mainClass>
+                </configuration>
+                <!-- <configuration>
+                     <finalName>${project.artifactId}-${version}-jar-with-dependencies</finalName>
+                 </configuration>-->
+                <!--<executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>-->
+            </plugin>
+        </plugins>
+    </build>
 </project>

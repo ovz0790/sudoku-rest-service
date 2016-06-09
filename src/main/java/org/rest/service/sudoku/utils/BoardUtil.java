@@ -30,6 +30,22 @@ public class BoardUtil {
         return brd;
     }
 
+
+    public boolean isSolved(int[][] board, int[][] solvedBoard){
+        for (int i=0;i<9;i++){
+            for (int j=0;j<9;j++){
+                if (board[i][j] != solvedBoard[i][j]){
+                    logger.info("___________!!!!!!!!!!!!!!!!");
+                    return false;
+                } else {
+                    logger.info("___________{}_______{}!!!!!!!!!!!!!!!!", board[i][j], solvedBoard[i][j]);
+                }
+
+            }
+        }
+        return true;
+    }
+
     public void print(int  mBoardSize, int mBoxSize, int[][]  mBoard){
         StringBuilder sb = new StringBuilder("\n");
         for(int i = 0; i < mBoardSize; i++) {
