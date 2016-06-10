@@ -35,10 +35,7 @@ public class BoardUtil {
         for (int i=0;i<9;i++){
             for (int j=0;j<9;j++){
                 if (board[i][j] != solvedBoard[i][j]){
-                    logger.info("___________!!!!!!!!!!!!!!!!");
                     return false;
-                } else {
-                    logger.info("___________{}_______{}!!!!!!!!!!!!!!!!", board[i][j], solvedBoard[i][j]);
                 }
 
             }

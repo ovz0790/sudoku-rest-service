@@ -4,6 +4,7 @@ import org.rest.service.sudoku.config.SudokuConfiguration;
 import org.rest.service.sudoku.decision.Sudoku;
 import org.rest.service.sudoku.session.UserSession;
 import org.rest.service.sudoku.utils.BoardUtil;
+import org.rest.service.sudoku.utils.CommonUtils;
 import org.rest.service.sudoku.utils.ValidateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.ws.rs.QueryParam;
 import javax.xml.bind.ValidationException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -50,18 +52,29 @@ public class SudokuController {
     @Autowired
     ValidateUtil validateUtil;
 
-    @RequestMapping(value = "/show_board", method = RequestMethod.GET)
+    @Autowired
+    CommonUtils commonUtils;
+
+    @RequestMapping(value = "/show_task_board", method = RequestMethod.GET)
     @ResponseBody
-    public int[][] getBoard(){
-        return boardUtil.getRandomBord();
+    public int[][] getBoard() throws ValidationException {
+        validateBoard();
+        return userSession.board;
     }
 
-    @RequestMapping(value = "/init_board", method = RequestMethod.GET)
+    @RequestMapping(value = "/show_user_board", method = RequestMethod.GET)
     @ResponseBody
-    public int[][] initBoard(){
+    public int[][] getUserBoard() throws ValidationException {
+        validateBoard();
+        return userSession.userBoard;
+    }
+
+    @RequestMapping(value = "/init_board", method = RequestMethod.POST)
+    @ResponseBody
+    public int[][] initBoard() throws IOException {
         int[][] board = boardUtil.getRandomBord();
         userSession.board = board;
-        userSession.userBoard = Arrays.copyOf(board, board.length);
+        userSession.userBoard = commonUtils.getArrayCopy(board);
         return board;
     }
 
@@ -80,15 +93,19 @@ public class SudokuController {
         userSession.userBoard[xCoord][yCoord] = val;
     }
 
-    @RequestMapping(value = "/submit", method = RequestMethod.GET)
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
     @ResponseBody
-    public boolean changeElement(@QueryParam("clear") Boolean clear) throws ValidationException {
+    public boolean submit(@QueryParam("clear") Boolean clear)
+            throws ValidationException,
+                   IOException {
         validateBoard();
 
         boolean _clear = clear != null && clear;
 
         int[][] userBoard =  userSession.userBoard;
-        int[][] solvedBoard =  Arrays.copyOf(userBoard, userBoard.length);
+
+        int[][] solvedBoard = commonUtils.getArrayCopy(userBoard);
+
         sudoku.solve(solvedBoard);
 
         logger.info("User board _________________________________________________________{}", userBoard);
@@ -108,10 +125,9 @@ public class SudokuController {
 
     }
 
-    public final static class ServiceConfiguration {
+    public static class ServiceConfiguration {
         @Bean
         public EmbeddedServletContainerFactory servletContainer() {
-
             JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory(9001);
             return factory;
 
